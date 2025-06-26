@@ -1,5 +1,7 @@
 package com.microservices.order.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -10,20 +12,34 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity(name="orders")
-public class Order {
+public class Order implements Serializable{
 	
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@Id
 	@GeneratedValue(strategy =GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	
 	private String description;
 	
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	private List<ItemOrder> itens;
+	private List<ItemOrder> itens = new ArrayList<>();
 	
+	public Order() {
+		
+	}
+	
+	
+	public Order(Long id, String description) {
+		super();
+		this.id = id;
+		this.description = description;
+	}
+
 
 	public long getId() {
 		return id;
