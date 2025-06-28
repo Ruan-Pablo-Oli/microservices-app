@@ -3,6 +3,8 @@ package com.microservices.order.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservices.order.controller.dto.OrderAccRequest;
 import com.microservices.order.model.Order;
 import com.microservices.order.service.OrderService;
 
@@ -18,9 +21,14 @@ import com.microservices.order.service.OrderService;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final RabbitTemplate rabbitTemplate;
 	
-	public OrderController(OrderService orderService) {
+	@Value("${broker.queue.processamento.name}")
+	private String routingKey;
+	
+	public OrderController(OrderService orderService,RabbitTemplate rabbitTemplate) {
 		this.orderService = orderService;
+		this.rabbitTemplate = rabbitTemplate;
 	}
 	
 	@GetMapping
@@ -30,8 +38,9 @@ public class OrderController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> insertOrder(@RequestBody Order order){
-		orderService.insertOrder(order);
+	public ResponseEntity<?> insertOrder(@RequestBody OrderAccRequest request){
+		Order orderSaved = orderService.insertOrder(new Order(request.description()));
+		rabbitTemplate.convertAndSend("",routingKey,orderSaved.getDescription());
 		return ResponseEntity.ok().body(Map.of("message","Pedido salvo e enviado para o processamento"));
 	}
 	

@@ -34,9 +34,8 @@ public class Order implements Serializable{
 	}
 	
 	
-	public Order(Long id, String description) {
+	public Order(String description) {
 		super();
-		this.id = id;
 		this.description = description;
 	}
 
