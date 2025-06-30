@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,8 @@ public class Order implements Serializable{
 	
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-	private List<ItemOrder> itens = new ArrayList<>();
+	@JsonManagedReference
+	private List<ItemOrder> itens;
 	
 	public Order() {
 		

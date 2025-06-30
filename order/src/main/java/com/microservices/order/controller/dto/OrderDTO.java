@@ -1,13 +1,18 @@
-package com.microservices.processing.dto;
+package com.microservices.order.controller.dto;
 
 import java.io.Serializable;
 
-public class OrderDTO implements Serializable {
-	
+public class OrderDTO implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 	private String description;
+	
+	
+	public OrderDTO(String description) {
+		this.description = description;
+	}
 	
 	
 	public Long getId() {
@@ -23,5 +28,5 @@ public class OrderDTO implements Serializable {
 		this.description = description;
 	}
 	
-	
+
 }

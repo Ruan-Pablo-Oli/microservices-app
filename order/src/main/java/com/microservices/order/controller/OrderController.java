@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.microservices.order.controller.dto.OrderAccRequest;
+import com.microservices.order.controller.dto.OrderDTO;
 import com.microservices.order.model.Order;
 import com.microservices.order.service.OrderService;
 
@@ -40,7 +41,8 @@ public class OrderController {
 	@PostMapping
 	public ResponseEntity<?> insertOrder(@RequestBody OrderAccRequest request){
 		Order orderSaved = orderService.insertOrder(new Order(request.description()));
-		rabbitTemplate.convertAndSend("",routingKey,orderSaved);
+		OrderDTO orderSavedDTO = new OrderDTO(orderSaved.getDescription());
+		rabbitTemplate.convertAndSend("",routingKey,orderSavedDTO);
 		return ResponseEntity.ok().body(Map.of("message","Pedido salvo e enviado para o processamento"));
 	}
 	
