@@ -40,7 +40,7 @@ public class OrderController {
 	@PostMapping
 	public ResponseEntity<?> insertOrder(@RequestBody OrderAccRequest request){
 		Order orderSaved = orderService.insertOrder(new Order(request.description()));
-		rabbitTemplate.convertAndSend("",routingKey,orderSaved.getDescription());
+		rabbitTemplate.convertAndSend("",routingKey,orderSaved);
 		return ResponseEntity.ok().body(Map.of("message","Pedido salvo e enviado para o processamento"));
 	}
 	
